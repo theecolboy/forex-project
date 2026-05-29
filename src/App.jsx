@@ -15,7 +15,7 @@ function formatRate(rate) {
 }
 
 function buildApiPath(path) {
-  return `${''}/api${path}`;
+  return `/api${path}`;
 }
 
 function App() {
