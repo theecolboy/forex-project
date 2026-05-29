@@ -1,0 +1,5 @@
+{
+  "name": "api",
+  "entrypoint": "index.ts",
+  "env": []
+}
