@@ -1,0 +1,13 @@
+{
+  "name": "forex-dashboard",
+  "version": "1.0.0",
+  "description": "A real-time Forex exchange rates dashboard",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "keywords": ["forex", "currency", "exchange", "dashboard"],
+  "author": "theecolboy",
+  "license": "MIT"
+}
