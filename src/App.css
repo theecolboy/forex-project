@@ -678,73 +678,73 @@ footer.footer {
 }
 
 @media (max-width: 760px) {
-   .button-group,
-   .indicator-list,
-   .top-actions {
-     flex-direction: column;
-     align-items: stretch;
-   }
+  .button-group,
+  .indicator-list,
+  .top-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-   .market-meta {
-     grid-template-columns: 1fr 1fr;
-   }
+  .market-meta {
+    grid-template-columns: 1fr 1fr;
+  }
 
-   .trading-layout {
-     grid-template-columns: 1fr;
-   }
- }
+  .trading-layout {
+    grid-template-columns: 1fr;
+  }
+}
 
- .news-page {
-   padding: 20px;
- }
+.news-page {
+  padding: 20px;
+}
 
- .refresh-news {
-   padding: 12px 24px;
-   background: linear-gradient(135deg, #ef4444, #f87171);
-   color: #fef2f2;
-   border: none;
-   border-radius: 14px;
-   font-weight: 600;
-   cursor: pointer;
-   margin-bottom: 20px;
+.refresh-news {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #ef4444, #f87171);
+  color: #fef2f2;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
  }
 
  .news-list {
-   display: grid;
-   gap: 16px;
+  display: grid;
+  gap: 16px;
  }
 
  .news-item {
-   padding: 20px;
-   border-radius: 16px;
-   background: rgba(255, 255, 255, 0.03);
-   border: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(148, 163, 184, 0.1);
  }
 
  .news-item.impact-high {
-   border-color: rgba(239, 68, 68, 0.3);
-   background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.08);
  }
 
  .news-item.impact-medium {
-   border-color: rgba(251, 191, 36, 0.3);
-   background: rgba(251, 191, 36, 0.08);
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.08);
  }
 
  .news-item.impact-low {
-   border-color: rgba(34, 197, 94, 0.3);
-   background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.08);
  }
 
  .news-header {
-   display: flex;
-   justify-content: space-between;
-   margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
  }
 
  .news-time {
-   color: #94a3b8;
-   font-size: 0.85rem;
+  color: #94a3b8;
+  font-size: 0.85rem;
  }
 
  .news-impact {
@@ -779,10 +779,9 @@ footer.footer {
    margin-bottom: 12px;
  }
 
- .news-footer {
-   display: flex;
-   justify-content: space-between;
-   font-size: 0.85rem;
-   color: #94a3b8;
+.news-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #94a3b8;
  }
-}
