@@ -93,7 +93,7 @@ export default function TradeViewPage({
         <div className="panel-header">
           <div>
             <h2>{selectedAsset}</h2>
-            <p>{category} live feed - {timeframe} timeframe</p>
+            <p>🕯️ {category} live feed - {timeframe} timeframe</p>
           </div>
           <div className="price-stack">
             <span className="live-badge">Live moving</span>

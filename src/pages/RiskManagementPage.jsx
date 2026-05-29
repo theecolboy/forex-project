@@ -2,7 +2,7 @@ export default function RiskManagementPage({ accountSize, setAccountSize, riskPe
   return (
     <div className="risk-page card">
       <div className="panel-header">
-        <h2>Risk management</h2>
+        <h2>🛡️ Risk management</h2>
         <p>Tools and guardrails to protect your capital.</p>
       </div>
       <div className="risk-calculator">
@@ -39,7 +39,7 @@ export default function RiskManagementPage({ accountSize, setAccountSize, riskPe
           </div>
         )}
         <hr />
-        <h3>Risk tools</h3>
+        <h3>🧰 Risk tools</h3>
         <ul>
           {riskTools.map((tool) => (
             <li key={tool}>{tool}</li>

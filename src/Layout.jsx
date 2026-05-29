@@ -5,18 +5,18 @@ export default function Layout() {
     <div className="main-layout">
       <nav className="navbar">
         <div className="nav-container">
-          <Link to="/" className="nav-brand">pipvision fx</Link>
+          <Link to="/" className="nav-brand">📈 pipvision fx</Link>
           <div className="nav-links">
-            <Link to="/">Home</Link>
-            <Link to="/trade">Trade</Link>
-            <Link to="/trading">Trading View</Link>
-            <Link to="/indicators">Indicators</Link>
-            <Link to="/signals">Signals</Link>
-            <Link to="/news">News</Link>
-            <Link to="/assistant">AI Assistant</Link>
-            <Link to="/risk">Risk</Link>
-            <Link to="/academy">Academy</Link>
-            <Link to="/activity">Activity</Link>
+            <Link to="/">🏠 Home</Link>
+            <Link to="/trade">💹 Trade</Link>
+            <Link to="/trading">🕯️ Trading View</Link>
+            <Link to="/indicators">📊 Indicators</Link>
+            <Link to="/signals">⚡ Signals</Link>
+            <Link to="/news">📰 News</Link>
+            <Link to="/assistant">🤖 AI Assistant</Link>
+            <Link to="/risk">🛡️ Risk</Link>
+            <Link to="/academy">🎓 Academy</Link>
+            <Link to="/activity">📋 Activity</Link>
           </div>
         </div>
       </nav>

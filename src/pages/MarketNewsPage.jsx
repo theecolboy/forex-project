@@ -17,7 +17,7 @@ export default function MarketNewsPage({ marketNews, loadNews, selectedAsset }) 
   return (
     <div className="news-page card">
       <div className="panel-header">
-        <h2>Market News & Analysis</h2>
+        <h2>📰 Market News & Analysis</h2>
         <p>Live-style updates on how news affects {selectedAsset} and market sessions.</p>
       </div>
 

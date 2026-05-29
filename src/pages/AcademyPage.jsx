@@ -2,7 +2,7 @@ export default function AcademyPage({ academy, aiBook, recommendedBooks, openCha
   return (
     <div className="academy-page card">
       <div className="panel-header">
-        <h2>Beginner academy</h2>
+        <h2>🎓 Beginner academy</h2>
         <p>Learning modules for live trading, risk management, and effective strategy execution.</p>
       </div>
 
@@ -40,7 +40,7 @@ export default function AcademyPage({ academy, aiBook, recommendedBooks, openCha
 
         {recommendedBooks.length > 0 && (
           <div className="recommended-books">
-            <h3>Recommended books</h3>
+            <h3>📚 Recommended books</h3>
             <div className="book-list">
               {recommendedBooks.map((book) => (
                 <article key={book.title} className="book-card">

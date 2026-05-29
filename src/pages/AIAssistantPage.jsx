@@ -22,7 +22,7 @@ export default function AIAssistantPage({
   return (
     <div className="assistant-page card">
       <div className="panel-header">
-        <h2>AI trading assistant</h2>
+        <h2>🤖 AI trading assistant</h2>
         <p>{selectedAsset} analysis on {timeframe}. Ask one question or paste several queries at once.</p>
       </div>
 

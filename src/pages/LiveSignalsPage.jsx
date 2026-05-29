@@ -2,7 +2,7 @@ export default function LiveSignalsPage({ signals }) {
   return (
     <div className="signals-page card">
       <div className="panel-header">
-        <h2>Live signals</h2>
+        <h2>⚡ Live signals</h2>
         <p>AI trade ideas for current market conditions.</p>
       </div>
       <div className="signal-list">
@@ -13,7 +13,7 @@ export default function LiveSignalsPage({ signals }) {
             <div key={`${signal.symbol}-${signal.timeframe}`} className={`signal-card ${signal.signal.toLowerCase()}`}>
               <div>
                 <strong>{signal.symbol}</strong>
-                <span>{signal.signal}</span>
+                <span>{signal.signal === 'Buy' ? '🟢 Buy' : '🔴 Sell'}</span>
               </div>
               <p>{signal.rationale}</p>
               <div className="signal-meta">
