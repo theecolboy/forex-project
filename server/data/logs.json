@@ -498,5 +498,475 @@
     "timestamp": "2026-05-29T12:16:49.641Z",
     "action": "market load",
     "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T13:32:26.952Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T13:32:27.161Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T13:46:25.886Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T13:46:25.919Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T13:54:26.894Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T13:54:26.948Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T13:56:45.410Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T13:56:45.593Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:00:53.607Z",
+    "action": "risk calc",
+    "details": "acct:10000 risk%:1 entry:3 stop:10 units:14"
+  },
+  {
+    "timestamp": "2026-05-29T14:04:03.489Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:04:03.522Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:08:31.590Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:08:31.658Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:08:35.508Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:08:35.566Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:14:13.028Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:14:13.204Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:14:14.240Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:14:14.317Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:14:14.354Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:14:14.368Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:14:14.430Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:14:14.475Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:16:07.250Z",
+    "action": "assistant query",
+    "details": "Analyze entry, stop, and target for the current setup"
+  },
+  {
+    "timestamp": "2026-05-29T14:16:44.804Z",
+    "action": "assistant query",
+    "details": "Analyze entry, stop, and target for the current setup"
+  },
+  {
+    "timestamp": "2026-05-29T14:18:04.876Z",
+    "action": "category switch",
+    "details": "commodities"
+  },
+  {
+    "timestamp": "2026-05-29T14:18:04.941Z",
+    "action": "market load",
+    "details": "Gold 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:23:36.026Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:23:36.072Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:26:04.510Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:26:04.585Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:26:05.500Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:26:05.612Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:26:06.014Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:26:06.056Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:26:06.116Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:26:06.120Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:27:39.738Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:27:41.454Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:27:41.482Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:27:41.606Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:35:09.076Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:35:09.138Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:35:10.820Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:35:10.840Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:35:10.845Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:35:10.871Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:35:10.900Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:35:10.913Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:50:15.630Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:51:51.535Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:51:51.594Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:52:01.130Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:54:21.617Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:twelvedata]"
+  },
+  {
+    "timestamp": "2026-05-29T14:54:28.640Z",
+    "action": "market load",
+    "details": "EUR/USD 4h [source:twelvedata]"
+  },
+  {
+    "timestamp": "2026-05-29T14:55:28.178Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:twelvedata]"
+  },
+  {
+    "timestamp": "2026-05-29T14:55:36.170Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T14:57:20.063Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:07:02.833Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:07:03.708Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:07:03.738Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:07:03.781Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:08:14.767Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:12:11.618Z",
+    "action": "risk calc",
+    "details": "acct:10000 risk%:1 entry:10 stop:5 units:20"
+  },
+  {
+    "timestamp": "2026-05-29T15:13:26.592Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:14:01.977Z",
+    "action": "category switch",
+    "details": "commodities"
+  },
+  {
+    "timestamp": "2026-05-29T15:14:02.042Z",
+    "action": "market load",
+    "details": "Gold 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:14:11.028Z",
+    "action": "category switch",
+    "details": "indices"
+  },
+  {
+    "timestamp": "2026-05-29T15:14:11.066Z",
+    "action": "market load",
+    "details": "S&P 500 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:14:15.960Z",
+    "action": "category switch",
+    "details": "forex"
+  },
+  {
+    "timestamp": "2026-05-29T15:14:16.006Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:15:59.826Z",
+    "action": "market load",
+    "details": "EUR/USD 1y [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:18:46.248Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:19:16.178Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:19:48.671Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:twelvedata]"
+  },
+  {
+    "timestamp": "2026-05-29T15:19:52.598Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:23:55.825Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:25:00.348Z",
+    "action": "market load",
+    "details": "GBP/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:25:06.203Z",
+    "action": "market load",
+    "details": "GBP/USD 15m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:26:37.918Z",
+    "action": "assistant query",
+    "details": "Analyze GBP/USD for a potential buy market entry. Include entry trigger, stop placement, invalidation, and risk notes."
+  },
+  {
+    "timestamp": "2026-05-29T15:26:39.505Z",
+    "action": "assistant query",
+    "details": "Analyze GBP/USD for a potential buy market entry. Include entry trigger, stop placement, invalidation, and risk notes."
+  },
+  {
+    "timestamp": "2026-05-29T15:34:33.755Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:42:37.835Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:44:23.663Z",
+    "action": "category switch",
+    "details": "indices"
+  },
+  {
+    "timestamp": "2026-05-29T15:44:23.699Z",
+    "action": "market load",
+    "details": "S&P 500 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:53:49.824Z",
+    "action": "market load",
+    "details": "DOW JONES 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:55:30.466Z",
+    "action": "market load",
+    "details": "DOW JONES 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:55:34.236Z",
+    "action": "category switch",
+    "details": "commodities"
+  },
+  {
+    "timestamp": "2026-05-29T15:55:34.266Z",
+    "action": "market load",
+    "details": "Gold 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T15:55:35.916Z",
+    "action": "category switch",
+    "details": "forex"
+  },
+  {
+    "timestamp": "2026-05-29T15:55:35.955Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T16:00:13.996Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T18:34:01.610Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T18:34:02.169Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
   }
 ]
