@@ -54,16 +54,84 @@ const timeframeMapping = {
 
 const signalsTemplates = {
   bullish: ['Momentum strengthening', 'Price breakout confirmed', 'Support held', 'Trend continuation signal'],
-  bearish: ['Bearish reversal identified', 'Resistance rejection', 'Momentum weakening', 'Pullback to resistance']
+  bearish: ['Bearish reversal identified', 'Resistance rejection', 'Momentum weakening', 'Pullback to resistance'],
+  metalBullish: ['Safe-haven demand intensifies', 'Precious metal breakout above resistance', 'Central bank buying drives price higher', 'Inflation hedge rally continues'],
+  metalBearish: ['Profit-taking pressures metal lower', 'Risk-on sentiment weighs on gold', 'Dollar strength pressures precious metals', 'Technical rejection from key level']
 };
 
 const twelveData = require('./providers/twelvedata');
 
 const academyModules = [
-  { title: 'FX Basics', description: 'Learn the fundamentals of currency pairs, pips, and leverage.' },
+  {
+    title: 'FX Basics',
+    description: 'Learn currency pairs, pips, spreads, lot sizes, leverage, margin, sessions, order types, and how news moves exchange rates.',
+    lessons: [
+      'Currency pairs quote one currency against another. In EUR/USD, EUR is the base currency and USD is the quote currency.',
+      'A pip is the common measuring unit for price movement. Most major pairs use 0.0001 as one pip, while JPY pairs usually use 0.01.',
+      'The spread is the difference between bid and ask. It is a trading cost, so avoid low-liquidity periods when spreads widen.',
+      'Lot size controls exposure. Standard lots are 100,000 units, mini lots are 10,000, and micro lots are 1,000.',
+      'Leverage increases buying power, but it also magnifies losses. Professional traders size positions from risk first, not from available leverage.',
+      'Margin is the capital locked to keep a position open. Free margin protects you from forced liquidation during volatility.',
+      'The London and New York overlap often has the best liquidity for major pairs, while Asian sessions can be cleaner for JPY and AUD flows.',
+      'Market orders prioritize execution, limit orders prioritize price, and stop orders can trigger entries or exits when a level breaks.',
+      'Major FX drivers include interest-rate expectations, inflation, jobs data, central-bank speeches, risk sentiment, and commodity prices.',
+      'Before every trade, define bias, entry trigger, stop loss, target, position size, and the reason you will not take the setup.'
+    ]
+  },
   { title: 'Technical Indicators', description: 'Understand moving averages, RSI, MACD, and chart patterns.' },
   { title: 'Risk Management', description: 'Develop position sizing, stop management, and portfolio protection.' },
   { title: 'Live Trade Execution', description: 'Follow real-case trade decisions and market entries step by step.' }
+];
+
+const recommendedBooks = [
+  {
+    title: 'Currency Trading for Dummies',
+    author: 'Brian Dolan and Kathleen Brooks',
+    level: 'Beginner',
+    why: 'A friendly starting point for FX mechanics, pair behavior, market sessions, orders, and macro drivers.'
+  },
+  {
+    title: 'A Beginner\'s Guide to Forex Trading',
+    author: 'Matthew Driver',
+    level: 'Beginner',
+    why: 'Good for building a basic routine around analysis, trade preparation, and common beginner mistakes.'
+  },
+  {
+    title: 'Japanese Candlestick Charting Techniques',
+    author: 'Steve Nison',
+    level: 'Beginner to intermediate',
+    why: 'Useful for reading candle structure, reversals, continuation patterns, and price action around key levels.'
+  },
+  {
+    title: 'Technical Analysis of the Financial Markets',
+    author: 'John J. Murphy',
+    level: 'Intermediate',
+    why: 'A broad reference for trend, support and resistance, indicators, chart patterns, and market psychology.'
+  },
+  {
+    title: 'Trading in the Zone',
+    author: 'Mark Douglas',
+    level: 'All levels',
+    why: 'One of the best books for discipline, probabilities, emotional control, and executing a plan without hesitation.'
+  },
+  {
+    title: 'Market Wizards',
+    author: 'Jack D. Schwager',
+    level: 'All levels',
+    why: 'Interviews with successful traders that show different styles, risk habits, and the mindset behind longevity.'
+  },
+  {
+    title: 'The New Trading for a Living',
+    author: 'Dr. Alexander Elder',
+    level: 'Intermediate',
+    why: 'Connects psychology, technical analysis, risk management, and journaling into a practical trading process.'
+  },
+  {
+    title: 'Day Trading and Swing Trading the Currency Market',
+    author: 'Kathy Lien',
+    level: 'Intermediate',
+    why: 'Focused specifically on currencies, macro catalysts, pair selection, and practical FX trading strategies.'
+  }
 ];
 
 const indicatorsCatalog = ['SMA', 'EMA', 'RSI', 'MACD', 'Bollinger Bands', 'ADX', 'Stochastic'];
@@ -141,9 +209,13 @@ function calculateIndicators(candles, indicatorNames) {
 }
 
 function generateSignal(symbol, category) {
+  const isMetal = symbol.includes('Gold') || symbol.includes('XAU') || symbol.includes('Silver') || symbol.includes('XAG');
   const trend = Math.random() > 0.45 ? 'Buy' : 'Sell';
   const confidence = Math.floor(65 + Math.random() * 30);
-  const rationale = trend === 'Buy' ? signalsTemplates.bullish[Math.floor(Math.random() * signalsTemplates.bullish.length)] : signalsTemplates.bearish[Math.floor(Math.random() * signalsTemplates.bearish.length)];
+  const templates = isMetal
+    ? (trend === 'Buy' ? signalsTemplates.metalBullish : signalsTemplates.metalBearish)
+    : (trend === 'Buy' ? signalsTemplates.bullish : signalsTemplates.bearish);
+  const rationale = templates[Math.floor(Math.random() * templates.length)];
 
   return {
     symbol,
@@ -155,15 +227,128 @@ function generateSignal(symbol, category) {
   };
 }
 
-function createAssistantReply(query) {
-  const cleaned = String(query || '').toLowerCase();
-  if (cleaned.includes('risk')) {
-    return 'Use a strict 1.5% risk cap per trade, keep stop loss below the nearest structural level, and avoid overexposure to one asset class.';
+function normalizeSymbol(value) {
+  const candidate = String(value || '').trim();
+  const allSymbols = Object.values(assetCatalog).flat();
+  return allSymbols.find((symbol) => symbol.toLowerCase() === candidate.toLowerCase()) || candidate || 'EUR/USD';
+}
+
+function splitAssistantQueries(query) {
+  const normalized = String(query || '')
+    .replace(/\r/g, '\n')
+    .split(/\n+|(?<=\?)\s+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return normalized.length ? normalized.slice(0, 6) : [];
+}
+
+function getMarketBias(context = {}) {
+  const indicators = context.indicators || {};
+  const overview = context.overview || {};
+  const rsi = Number(indicators.RSI);
+  const macd = Number(indicators.MACD);
+  const price = Number(overview.price);
+  const sma = Number(indicators.SMA);
+  const ema = Number(indicators.EMA);
+
+  let score = 0;
+  const reasons = [];
+
+  if (Number.isFinite(rsi)) {
+    if (rsi >= 70) {
+      score -= 1;
+      reasons.push(`RSI is elevated at ${rsi.toFixed(1)}, so chase entries need confirmation.`);
+    } else if (rsi <= 30) {
+      score += 1;
+      reasons.push(`RSI is compressed at ${rsi.toFixed(1)}, which can support a rebound setup.`);
+    } else {
+      reasons.push(`RSI is neutral at ${rsi.toFixed(1)}, so trend and structure matter more.`);
+    }
   }
-  if (cleaned.includes('entry')) {
-    return 'Wait for price confirmation above the short-term moving average and verify a bullish signal from RSI before entering the trade.';
+
+  if (Number.isFinite(macd)) {
+    score += macd >= 0 ? 1 : -1;
+    reasons.push(`MACD is ${macd >= 0 ? 'positive' : 'negative'} (${macd.toFixed(3)}).`);
   }
-  return 'Focus on capital preservation first: confirm liquidity, set defined stops, and only scale positions after the signal confirms on multiple timeframes.';
+
+  if (Number.isFinite(price) && Number.isFinite(sma)) {
+    score += price >= sma ? 1 : -1;
+    reasons.push(`Price is ${price >= sma ? 'above' : 'below'} the SMA.`);
+  }
+
+  if (Number.isFinite(price) && Number.isFinite(ema)) {
+    score += price >= ema ? 1 : -1;
+    reasons.push(`Price is ${price >= ema ? 'above' : 'below'} the EMA.`);
+  }
+
+  const bias = score >= 2 ? 'bullish' : score <= -2 ? 'bearish' : 'mixed';
+  return { bias, reasons: reasons.slice(0, 3) };
+}
+
+function createAssistantReply(query, context = {}) {
+  const questions = splitAssistantQueries(query);
+  if (!questions.length) {
+    return {
+      answer: 'Please enter a trading question, setup, or risk scenario for the assistant to review.',
+      items: []
+    };
+  }
+
+  const symbol = normalizeSymbol(context.symbol);
+  const timeframe = context.timeframe || 'current timeframe';
+  const { bias, reasons } = getMarketBias(context);
+
+  const items = questions.map((question, index) => {
+    const cleaned = question.toLowerCase();
+    const wantsRisk = /\brisk|stop|loss|size|position|drawdown|leverage/.test(cleaned);
+    const wantsEntry = /\bentry|enter|buy|sell|long|short|setup|signal/.test(cleaned);
+    const wantsNews = /\bnews|fundamental|event|cpi|nfp|fed|ecb|boj|rate/.test(cleaned);
+    const wantsExit = /\bexit|target|take profit|tp|close|trail/.test(cleaned);
+
+    const lines = [`${index + 1}. ${question}`];
+    lines.push(`Market read: ${symbol} on ${timeframe} has a ${bias} technical bias.`);
+
+    if (reasons.length) {
+      lines.push(`Evidence: ${reasons.join(' ')}`);
+    } else {
+      lines.push('Evidence: live indicators were not supplied, so treat this as a process checklist rather than a signal.');
+    }
+
+    if (wantsRisk) {
+      lines.push('Risk plan: cap risk at 0.5%-1.5% per trade, place the stop beyond invalidation, and avoid adding if the stop distance forces oversized exposure.');
+    }
+
+    if (wantsEntry) {
+      lines.push('Entry plan: wait for price acceptance at the level, confirm momentum on the next candle, and only execute when reward-to-risk is at least 2:1.');
+    }
+
+    if (wantsExit) {
+      lines.push('Exit plan: scale partial profit at the first liquidity area, move risk to breakeven only after structure confirms, and trail behind fresh swing points.');
+    }
+
+    if (wantsNews) {
+      lines.push('Fundamental check: avoid opening new size immediately before high-impact releases; let spreads normalize and reassess after the first reaction candle.');
+    }
+
+    if (!wantsRisk && !wantsEntry && !wantsNews && !wantsExit) {
+      lines.push('Professional checklist: define bias, invalidation, entry trigger, position size, target, and the reason you would stand aside before placing the trade.');
+    }
+
+    lines.push('Decision: this is trade-planning guidance, not financial advice; confirm with your own chart and risk rules before execution.');
+    return lines.join('\n');
+  });
+
+  return {
+    answer: items.join('\n\n'),
+    items,
+    meta: {
+      symbol,
+      timeframe,
+      bias,
+      handledQueries: items.length
+    }
+  };
 }
 
 ensureDataFiles();
@@ -301,7 +486,7 @@ app.get('/api/academy', (req, res) => {
       {
         id: 1,
         title: 'Foundations of FX Trading',
-        content: 'Understand pairs, pips, lot sizes, leverage, and the mechanics of spot FX markets. Focus on liquidity, session overlaps, and order types.'
+        content: 'Understand pairs, pips, lot sizes, leverage, margin, spreads, swaps, and the mechanics of spot FX markets. Focus on liquidity, session overlaps, order types, and the difference between analysis and execution.'
       },
       {
         id: 2,
@@ -326,7 +511,7 @@ app.get('/api/academy', (req, res) => {
     ]
   };
 
-  res.json({ modules: academyModules, aiBook });
+  res.json({ modules: academyModules, aiBook, recommendedBooks });
 });
 
 app.get('/api/indicators', (req, res) => {
@@ -352,56 +537,100 @@ app.get('/api/risk-tools', (req, res) => {
 
 app.post('/api/assistant', (req, res) => {
   const query = String(req.body.query || '');
-  res.json({ answer: createAssistantReply(query) });
+  const context = req.body.context && typeof req.body.context === 'object' ? req.body.context : {};
+  res.json(createAssistantReply(query, context));
 });
-
-function generateNews(symbol, category) {
-  // Special handling for commodities like Gold
-  if (symbol.includes('Gold') || symbol.includes('XAU')) {
-    return {
-      title: 'Gold Price Surges on Safe-Haven Demand',
-      summary: 'Gold futures jumped as investors seek protection amid market uncertainty. Fed policy outlook and inflation concerns driving precious metals higher.',
-      impact: 'high',
-      source: 'Kitco News'
-    };
-  }
-  // Forex news
-  if (category === 'forex') {
-    return {
-      title: `${symbol} Breaks Key Support`,
-      summary: `Price dropped below critical support level, potential for further downside momentum.`,
-      impact: 'high',
-      source: 'Forex Factory'
-    };
-  }
-  // Indices news
-  return {
-    title: `${symbol} Index Futures Edge Higher`,
-    summary: `Equity markets show mixed trading as investors digest economic data. Volatility expected during US session.`,
-    impact: 'medium',
-    source: 'MarketWatch'
-  };
-}
 
 app.get('/api/news', (req, res) => {
   const category = req.query.category || 'forex';
   const symbol = req.query.symbol || 'EUR/USD';
-  
+  const hourAgo = (hours) => new Date(Date.now() - hours * 3600000).toISOString();
+  const includesAny = (value, terms) => terms.some((term) => value.includes(term));
+  const selected = String(symbol);
+
   const goldNews = [
-    { title: 'Gold Hits Record High on Dovish Fed Outlook', summary: 'Gold prices surge to new all-time highs as traders price in potential Fed rate cuts. Safe-haven demand intensifies amid geopolitical tensions.', time: new Date().toISOString(), impact: 'high', source: 'Kitco News', currency: 'XAU' },
-    { title: 'Central Banks Ramp Up Gold Buying', summary: 'Poland, China and India continue aggressive gold purchases. CBGA data shows sustained demand from sovereign investors.', time: new Date(Date.now() - 3600000).toISOString(), impact: 'high', source: 'Reuters', currency: 'XAU' },
-    { title: 'Gold Volatility Spikes Ahead of NFP', summary: 'Precious metals trading in wide ranges as non-farm payrolls loom. Options market signals increased two-way risk.', time: new Date(Date.now() - 7200000).toISOString(), impact: 'medium', source: 'Bloomberg', currency: 'XAU' },
-    { title: 'Gold Miners Rally on Earnings Beat', summary: 'Major gold mining stocks outperform as Q1 results exceed expectations. Dividend hikes lift sentiment across sector.', time: new Date(Date.now() - 10800000).toISOString(), impact: 'low', source: 'Mining.com', currency: 'XAU' }
+    { title: 'Gold Holds Bid as Real Yields Ease', summary: 'Bullion remains supported as softer real yields improve demand for non-yielding assets. Traders are watching whether buyers defend the latest breakout zone.', time: hourAgo(0), impact: 'high', source: 'Kitco News', currency: 'XAU' },
+    { title: 'Central Banks Continue Gold Accumulation', summary: 'Reserve managers keep adding bullion as diversification remains a priority, giving gold a steady structural demand backdrop.', time: hourAgo(1), impact: 'high', source: 'Reuters', currency: 'XAU' },
+    { title: 'Gold Volatility Expands Before US Data', summary: 'Options pricing points to wider two-way risk ahead of inflation and labor-market releases. Intraday traders should expect sharper stop hunts.', time: hourAgo(2), impact: 'medium', source: 'Bloomberg', currency: 'XAU' },
+    { title: 'Dollar Pullback Supports Precious Metals', summary: 'A softer dollar is helping gold and silver recover, although buyers still need confirmation above nearby resistance.', time: hourAgo(3), impact: 'medium', source: 'MarketWatch', currency: 'USD' },
+    { title: 'Gold Miners Track Bullion Higher', summary: 'Mining shares outperform as margins improve with firmer spot prices. Equity flows are adding a supportive signal for metals sentiment.', time: hourAgo(4), impact: 'low', source: 'Mining.com', currency: 'XAU' },
+    { title: 'Asia Session Demand Keeps Gold Firm', summary: 'Physical demand from Asian trading desks remains steady, limiting downside during quieter liquidity windows.', time: hourAgo(5), impact: 'low', source: 'FXStreet', currency: 'XAU' },
+    { title: 'Safe-Haven Flows Return on Geopolitical Risk', summary: 'Fresh risk headlines are drawing defensive bids into precious metals while equity futures trade cautiously.', time: hourAgo(6), impact: 'high', source: 'CNBC', currency: 'XAU' },
+    { title: 'Silver Follows Gold but Lags Momentum', summary: 'Silver is rising with gold, but weaker industrial demand expectations keep relative performance uneven.', time: hourAgo(7), impact: 'medium', source: 'Investing.com', currency: 'XAG' }
   ];
-  
+
+  const commoditiesNews = [
+    { title: `${selected} Traders Watch Inventory Data`, summary: 'Commodity desks are focusing on inventory changes and demand revisions. Breakouts may need confirmation from volume and session close levels.', time: hourAgo(0), impact: 'high', source: 'Reuters', currency: selected },
+    { title: 'Crude Oil Holds Range Before OPEC Commentary', summary: 'Energy markets remain range-bound as traders balance supply guidance against demand uncertainty from major economies.', time: hourAgo(1), impact: 'medium', source: 'Bloomberg', currency: 'Oil' },
+    { title: 'Natural Gas Slides on Weather Revisions', summary: 'Forecast models point to milder demand conditions, pressuring near-term gas contracts and increasing volatility around storage reports.', time: hourAgo(2), impact: 'medium', source: 'MarketWatch', currency: 'Gas' },
+    { title: 'Copper Finds Support on China Stimulus Hopes', summary: 'Base metals are firmer as traders price the possibility of stronger industrial demand and infrastructure support.', time: hourAgo(3), impact: 'medium', source: 'Fastmarkets', currency: 'Copper' },
+    { title: 'Commodities Desk Flags Stronger Dollar Risk', summary: 'A dollar rebound could pressure metals and energy contracts, especially if US yields move higher during New York trading.', time: hourAgo(4), impact: 'high', source: 'FXStreet', currency: 'USD' },
+    { title: 'Shipping Costs Add Noise to Raw Material Prices', summary: 'Freight volatility is affecting some commodity spreads, making regional pricing less predictable for short-term traders.', time: hourAgo(5), impact: 'low', source: 'S&P Global', currency: 'Commodities' }
+  ];
+
   const forexNews = [
-    { title: 'Dollar Index Holds Steady Ahead of CPI', summary: 'EUR/USD and GBP/USD consolidate as markets await US inflation data. Fed rate cut pricing stabilizing.', time: new Date().toISOString(), impact: 'high', source: 'Forex Factory', currency: 'USD' },
-    { title: 'ECB Signals Caution on Rate Cuts', summary: 'Lagarde emphasizes data-dependence while maintaining dovish tone. EUR finds support against USD.', time: new Date(Date.now() - 3600000).toISOString(), impact: 'medium', source: 'Reuters', currency: 'EUR' },
-    { title: 'BoJ Intervenes to Cap Yen Weakness', summary: 'Japanese officials step in to support currency. USD/JPY retreats from multi-month highs.', time: new Date(Date.now() - 7200000).toISOString(), impact: 'high', source: 'Bloomberg', currency: 'JPY' }
+    { title: `${selected} Consolidates Ahead of US Session`, summary: 'Liquidity is improving into the New York handover. Traders are watching whether the pair can hold its intraday structure after the next data impulse.', time: hourAgo(0), impact: 'medium', source: 'Forex Factory', currency: selected },
+    { title: 'Dollar Index Holds Steady Before Inflation Data', summary: 'Major pairs are consolidating as markets wait for a fresh inflation signal. Fed pricing remains the key driver for USD volatility.', time: hourAgo(1), impact: 'high', source: 'MarketWatch', currency: 'USD' },
+    { title: 'ECB Speakers Keep Euro Traders Cautious', summary: 'Policy comments continue to stress data dependence, leaving EUR pairs sensitive to yield-spread moves.', time: hourAgo(2), impact: 'medium', source: 'Reuters', currency: 'EUR' },
+    { title: 'BoJ Watch Keeps Yen Crosses Volatile', summary: 'Japanese officials continue to monitor currency weakness, raising the risk of sharp reversals in JPY pairs.', time: hourAgo(3), impact: 'high', source: 'Bloomberg', currency: 'JPY' },
+    { title: 'Sterling Tracks UK Yield Expectations', summary: 'GBP pairs are following front-end yield changes as traders reassess growth and inflation expectations.', time: hourAgo(4), impact: 'medium', source: 'DailyFX', currency: 'GBP' },
+    { title: 'Commodity FX Firms With Risk Sentiment', summary: 'AUD, CAD, and NZD are stabilizing as equity sentiment improves and commodity-linked flows recover.', time: hourAgo(5), impact: 'low', source: 'FXStreet', currency: 'AUD/CAD/NZD' },
+    { title: 'Session Overlap May Lift Forex Volatility', summary: 'London-New York overlap is expected to bring tighter spreads but faster momentum swings around key levels.', time: hourAgo(6), impact: 'medium', source: 'Investing.com', currency: 'FX' },
+    { title: 'Treasury Yields Guide Dollar Direction', summary: 'USD bulls need yields to extend higher; a yield fade could open room for relief rallies across major pairs.', time: hourAgo(7), impact: 'high', source: 'CNBC', currency: 'USD' },
+    { title: 'Swiss Franc Demand Softens as Risk Appetite Improves', summary: 'CHF is losing some defensive bid as broader risk conditions stabilize across European trading.', time: hourAgo(8), impact: 'low', source: 'Reuters', currency: 'CHF' },
+    { title: 'Scandinavian FX Watches Energy Prices', summary: 'NOK and SEK remain sensitive to energy flows, regional growth data, and broader dollar direction.', time: hourAgo(9), impact: 'low', source: 'Bloomberg', currency: 'SEK/NOK' }
   ];
-  
-  const items = symbol.includes('Gold') || symbol.includes('XAU') ? goldNews : forexNews;
-  res.json({ news: items });
+
+  const indicesNews = [
+    { title: `${selected} Futures Trade Carefully Before US Cash Open`, summary: 'Index futures are holding a narrow range as traders wait for cash-market breadth and volume confirmation.', time: hourAgo(0), impact: 'medium', source: 'MarketWatch', currency: selected },
+    { title: 'Tech Megacaps Drive NASDAQ Sentiment', summary: 'Large-cap technology names continue to steer risk appetite, keeping NASDAQ volatility elevated around earnings and guidance headlines.', time: hourAgo(1), impact: 'high', source: 'CNBC', currency: 'NASDAQ' },
+    { title: 'S&P 500 Breadth Improves but Resistance Holds', summary: 'More sectors are participating in the move, but the index still needs a clean close above resistance to confirm continuation.', time: hourAgo(2), impact: 'medium', source: 'Bloomberg', currency: 'SPX' },
+    { title: 'Dow Industrials Supported by Defensive Rotation', summary: 'Value and defensive sectors are attracting flows as traders balance growth optimism against policy uncertainty.', time: hourAgo(3), impact: 'low', source: 'Reuters', currency: 'DJIA' },
+    { title: 'Europe Indices Track Rate-Cut Expectations', summary: 'DAX and broader European benchmarks are sensitive to central-bank repricing and euro-area data surprises.', time: hourAgo(4), impact: 'medium', source: 'Financial Times', currency: 'DAX' },
+    { title: 'Nikkei Watches Yen and Exporter Flows', summary: 'Japanese equities remain tied to currency moves, with exporter strength depending on whether yen weakness persists.', time: hourAgo(5), impact: 'medium', source: 'Nikkei Asia', currency: 'JPY' },
+    { title: 'Volatility Gauge Edges Higher', summary: 'Option hedging is increasing into upcoming macro releases, which could make index breakouts less reliable until data clears.', time: hourAgo(6), impact: 'high', source: 'CBOE', currency: 'VIX' },
+    { title: 'Small Caps Lag as Funding Costs Stay Elevated', summary: 'Higher borrowing costs continue to weigh on smaller companies, keeping market leadership concentrated.', time: hourAgo(7), impact: 'low', source: 'Barrons', currency: 'US Equities' }
+  ];
+
+  let items = forexNews;
+  if (includesAny(selected, ['Gold', 'XAU'])) {
+    items = goldNews;
+  } else if (category === 'commodities') {
+    items = commoditiesNews;
+  } else if (category === 'indices') {
+    items = indicesNews;
+  }
+
+  res.json({ news: items, count: items.length, generatedAt: new Date().toISOString() });
+});
+
+const clientDistDir = path.join(__dirname, '..', 'dist');
+const clientIndexFile = path.join(clientDistDir, 'index.html');
+
+if (fs.existsSync(clientDistDir)) {
+  app.use(express.static(clientDistDir));
+}
+
+app.get('/', (req, res) => {
+  if (fs.existsSync(clientIndexFile)) {
+    return res.sendFile(clientIndexFile);
+  }
+
+  return res.json({
+    message: 'PipVision FX API is running. Open the Vite frontend on http://localhost:5173, or build the app to serve it from this backend.',
+    api: '/api/status'
+  });
+});
+
+app.get(/^\/(?!api\/).*/, (req, res) => {
+  if (fs.existsSync(clientIndexFile)) {
+    return res.sendFile(clientIndexFile);
+  }
+
+  return res.status(404).json({
+    message: `No frontend build is available for ${req.path}. Run npm run dev for the app, or npm run build before serving from the backend.`,
+    api: '/api/status'
+  });
 });
 
 app.listen(PORT, () => {

@@ -56,8 +56,9 @@ export default function TradingViewPage({ assistantQuery, setAssistantQuery, run
 
             <hr />
             <button type="button" onClick={() => {
-              setAssistantQuery(`Analyze ${selectedAsset} for potential ${orderSide} entry`);
-              runAssistant();
+              const prompt = `Analyze ${selectedAsset} for a potential ${orderSide} ${orderType} entry. Include entry trigger, stop placement, invalidation, and risk notes.`;
+              setAssistantQuery(prompt);
+              runAssistant(prompt);
             }}>
               Analyze with AI
             </button>
@@ -102,7 +103,7 @@ export default function TradingViewPage({ assistantQuery, setAssistantQuery, run
         </div>
       </section>
 
-      {assistantAnswer && !calcResult && (
+      {assistantAnswer && (
         <div className="assistant-insight card">
           <strong>AI Analysis:</strong>
           <p>{assistantAnswer}</p>

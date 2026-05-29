@@ -1,62 +1,25 @@
-import { useParams } from 'react-router-dom';
-
-import { useEffect, useRef } from 'react';
-
-export default function TradeViewPage({ category, categories, assetCatalog, selectedAsset, assetList, timeframe, timeframes, selectedIndicators, indicatorOptions, marketData, chartRef, statusMessage, currentOverview, currentIndicators, dataSource, changeCategory, setSelectedAsset, setTimeframe, setSelectedIndicators, loadMarket, calculatePosition, accountSize, setAccountSize, riskPercent, setRiskPercent, entryPrice, setEntryPrice, stopPrice, setStopPrice, calcResult }) {
-
+export default function TradeViewPage({
+  category,
+  categories,
+  selectedAsset,
+  assetList,
+  timeframe,
+  timeframes,
+  selectedIndicators,
+  indicatorOptions,
+  chartRef,
+  statusMessage,
+  currentOverview,
+  currentIndicators,
+  dataSource,
+  changeCategory,
+  setSelectedAsset,
+  setTimeframe,
+  setSelectedIndicators,
+  setDataSource,
+  loadMarket
+}) {
   const formatRate = (rate) => rate.toFixed(rate > 10 ? 2 : 4);
-
-  const localChartRef = chartRef;
-
-  useEffect(() => {
-    if (localChartRef.current && marketData?.candles?.length) {
-      const ctx = localChartRef.current.getContext('2d');
-      const width = localChartRef.current.width;
-      const height = localChartRef.current.height;
-      const padding = 40;
-      const candles = marketData.candles;
-      const candleWidth = Math.max(4, (width - padding * 2) / candles.length / 1.5);
-      const highs = candles.map((item) => item.high);
-      const lows = candles.map((item) => item.low);
-      const maxPrice = Math.max(...highs);
-      const minPrice = Math.min(...lows);
-      const range = maxPrice - minPrice || 1;
-      const chartWidth = width - padding * 2;
-      const chartHeight = height - padding * 2;
-
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = '#07131f';
-      ctx.fillRect(0, 0, width, height);
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-      ctx.lineWidth = 1;
-      for (let row = 0; row <= 4; row += 1) {
-        const y = padding + (chartHeight / 4) * row;
-        ctx.beginPath();
-        ctx.moveTo(padding, y);
-        ctx.lineTo(width - padding, y);
-        ctx.stroke();
-      }
-
-      candles.forEach((candle, index) => {
-        const x = padding + (chartWidth / candles.length) * index + candleWidth / 2;
-        const openY = padding + ((maxPrice - candle.open) / range) * chartHeight;
-        const closeY = padding + ((maxPrice - candle.close) / range) * chartHeight;
-        const highY = padding + ((maxPrice - candle.high) / range) * chartHeight;
-        const lowY = padding + ((maxPrice - candle.low) / range) * chartHeight;
-        const bodyTop = Math.min(openY, closeY);
-        const bodyHeight = Math.max(Math.abs(closeY - openY), 2);
-        const bullish = candle.close >= candle.open;
-        ctx.strokeStyle = bullish ? '#22c55e' : '#ef4444';
-        ctx.fillStyle = bullish ? 'rgba(34, 197, 94, 0.24)' : 'rgba(239, 68, 68, 0.24)';
-        ctx.beginPath();
-        ctx.moveTo(x, highY);
-        ctx.lineTo(x, lowY);
-        ctx.stroke();
-        ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
-        ctx.strokeRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
-      });
-    }
-  }, [marketData]);
 
   return (
     <div className="trade-view-page">
@@ -120,8 +83,8 @@ export default function TradeViewPage({ category, categories, assetCatalog, sele
         <div className="control-block">
           <label>Data source</label>
           <div className="button-group">
-            <button type="button" className={dataSource === 'simulation' ? 'active' : ''} onClick={() => loadMarket()}>Simulation</button>
-            <button type="button" className={dataSource === 'twelvedata' ? 'active' : ''} onClick={() => loadMarket()}>Twelve Data (Live)</button>
+            <button type="button" className={dataSource === 'simulation' ? 'active' : ''} onClick={() => setDataSource('simulation')}>Simulation</button>
+            <button type="button" className={dataSource === 'twelvedata' ? 'active' : ''} onClick={() => setDataSource('twelvedata')}>Twelve Data</button>
           </div>
         </div>
       </section>
@@ -130,9 +93,12 @@ export default function TradeViewPage({ category, categories, assetCatalog, sele
         <div className="panel-header">
           <div>
             <h2>{selectedAsset}</h2>
-            <p>{category} live feed • {timeframe} timeframe</p>
+            <p>{category} live feed - {timeframe} timeframe</p>
           </div>
-          <div className="price-chip">{currentOverview.price ? formatRate(currentOverview.price) : '--'}</div>
+          <div className="price-stack">
+            <span className="live-badge">Live moving</span>
+            <div className="price-chip">{currentOverview.price ? formatRate(currentOverview.price) : '--'}</div>
+          </div>
         </div>
         <div className="market-meta">
           <span>High: {currentOverview.high ? formatRate(currentOverview.high) : '--'}</span>

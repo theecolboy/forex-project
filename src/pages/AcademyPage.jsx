@@ -1,4 +1,4 @@
-export default function AcademyPage({ academy, aiBook, openChapter, setOpenChapter }) {
+export default function AcademyPage({ academy, aiBook, recommendedBooks, openChapter, setOpenChapter }) {
   return (
     <div className="academy-page card">
       <div className="panel-header">
@@ -12,6 +12,13 @@ export default function AcademyPage({ academy, aiBook, openChapter, setOpenChapt
             <li key={item.title}>
               <strong>{item.title}</strong>
               <p>{item.description}</p>
+              {item.lessons && (
+                <ul className="lesson-list">
+                  {item.lessons.map((lesson) => (
+                    <li key={lesson}>{lesson}</li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>
@@ -26,6 +33,24 @@ export default function AcademyPage({ academy, aiBook, openChapter, setOpenChapt
                   <button type="button" onClick={() => setOpenChapter(openChapter === ch.id ? null : ch.id)}>{ch.title}</button>
                   {openChapter === ch.id && <p className="chapter-content">{ch.content}</p>}
                 </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {recommendedBooks.length > 0 && (
+          <div className="recommended-books">
+            <h3>Recommended books</h3>
+            <div className="book-list">
+              {recommendedBooks.map((book) => (
+                <article key={book.title} className="book-card">
+                  <div>
+                    <strong>{book.title}</strong>
+                    <span>{book.author}</span>
+                  </div>
+                  <small>{book.level}</small>
+                  <p>{book.why}</p>
+                </article>
               ))}
             </div>
           </div>

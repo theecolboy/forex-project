@@ -43,11 +43,14 @@ function App() {
   const [logs, setLogs] = useState([]);
   const [academy, setAcademy] = useState([]);
   const [aiBook, setAiBook] = useState(null);
+  const [recommendedBooks, setRecommendedBooks] = useState([]);
   const [openChapter, setOpenChapter] = useState(null);
   const [riskTools, setRiskTools] = useState([]);
   const [indicatorOptions, setIndicatorOptions] = useState(defaultIndicators);
   const [assistantQuery, setAssistantQuery] = useState('');
   const [assistantAnswer, setAssistantAnswer] = useState('Ask the trading assistant for risk, entries, or strategy validation.');
+  const [assistantLoading, setAssistantLoading] = useState(false);
+  const [assistantHistory, setAssistantHistory] = useState([]);
   const [accountSize, setAccountSize] = useState(10000);
   const [riskPercent, setRiskPercent] = useState(1);
   const [entryPrice, setEntryPrice] = useState('');
@@ -69,13 +72,66 @@ function App() {
   }, [category, selectedAsset, timeframe, selectedIndicators, dataSource]);
 
   useEffect(() => {
-    drawCandlestick();
+    let animationId;
+    const render = (frameTime) => {
+      drawCandlestick(frameTime);
+      animationId = requestAnimationFrame(render);
+    };
+
+    if (marketData?.candles?.length) {
+      animationId = requestAnimationFrame(render);
+    }
+
+    return () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    };
   }, [marketData]);
 
   useEffect(() => {
     const timer = setInterval(() => setLocalTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setMarketData((current) => {
+        if (!current?.candles?.length || dataSource !== 'simulation') {
+          return current;
+        }
+
+        const candles = current.candles.map((candle) => ({ ...candle }));
+        const last = candles[candles.length - 1];
+        const previousClose = last.close || current.overview?.price || 1;
+        const volatility = Math.max(Math.abs(previousClose) * 0.00045, 0.0001);
+        const nextClose = Math.max(previousClose + (Math.random() - 0.5) * volatility, 0.00001);
+        const updatedLast = {
+          ...last,
+          close: Number(nextClose.toFixed(5)),
+          high: Number(Math.max(last.high, nextClose).toFixed(5)),
+          low: Number(Math.min(last.low, nextClose).toFixed(5)),
+          volume: Number(last.volume || 0) + Math.floor(Math.random() * 18) + 2
+        };
+        candles[candles.length - 1] = updatedLast;
+
+        return {
+          ...current,
+          lastUpdated: new Date().toISOString(),
+          candles,
+          overview: {
+            ...(current.overview || {}),
+            price: updatedLast.close,
+            high: Number(Math.max(...candles.map((c) => c.high)).toFixed(5)),
+            low: Number(Math.min(...candles.map((c) => c.low)).toFixed(5)),
+            volume: candles.reduce((sum, c) => sum + Number(c.volume || 0), 0)
+          }
+        };
+      });
+    }, 1200);
+
+    return () => clearInterval(timer);
+  }, [dataSource, selectedAsset, timeframe]);
 
   const categoryDisplay = useMemo(
     () => ({ forex: 'Forex', commodities: 'Commodities', indices: 'Indices' })[category],
@@ -113,6 +169,7 @@ function App() {
       const academyJson = await academyRes.json();
       setAcademy(academyJson.modules || []);
       setAiBook(academyJson.aiBook || null);
+      setRecommendedBooks(academyJson.recommendedBooks || []);
       setIndicatorOptions((await indicatorsRes.json()).available || defaultIndicators);
       setRiskTools((await riskRes.json()).tools || []);
       setOverview((await fetch(buildApiPath('/overview')).then((res) => res.json())) || null);
@@ -216,27 +273,49 @@ function App() {
     }
   }
 
-  async function runAssistant() {
-    if (!assistantQuery.trim()) {
+  async function runAssistant(nextQuery = assistantQuery) {
+    const query = String(nextQuery || '').trim();
+    if (!query) {
       setAssistantAnswer('Please enter a question for the trading assistant.');
       return;
     }
+    setAssistantQuery(query);
+    setAssistantLoading(true);
     try {
       const response = await fetch(buildApiPath('/assistant'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: assistantQuery })
+        body: JSON.stringify({
+          query,
+          context: {
+            symbol: selectedAsset,
+            category,
+            timeframe,
+            overview: marketData?.overview || null,
+            indicators: marketData?.indicators || null
+          }
+        })
       });
+      if (!response.ok) {
+        throw new Error(`Assistant request failed: ${response.status}`);
+      }
       const data = await response.json();
-      setAssistantAnswer(data.answer || 'No answer returned.');
-      pushLog('assistant query', assistantQuery);
+      const answer = data.answer || 'No answer returned.';
+      setAssistantAnswer(answer);
+      setAssistantHistory((items) => [
+        { query, answer, meta: data.meta || null, timestamp: new Date().toISOString() },
+        ...items
+      ].slice(0, 6));
+      pushLog('assistant query', query);
     } catch (error) {
       console.error(error);
       setAssistantAnswer('Assistant service is unavailable.');
+    } finally {
+      setAssistantLoading(false);
     }
   }
 
-  function drawCandlestick() {
+  function drawCandlestick(frameTime = 0) {
     const canvas = chartRef.current;
     if (!canvas || !marketData?.candles?.length) return;
 
@@ -255,9 +334,30 @@ function App() {
     const chartHeight = height - padding * 2;
 
     ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = '#07131f';
+
+    const background = ctx.createLinearGradient(0, 0, 0, height);
+    background.addColorStop(0, '#0b1726');
+    background.addColorStop(0.5, '#07111d');
+    background.addColorStop(1, '#030811');
+    ctx.fillStyle = background;
     ctx.fillRect(0, 0, width, height);
-    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+
+    const glow = ctx.createRadialGradient(width * 0.78, height * 0.08, 20, width * 0.78, height * 0.08, width * 0.72);
+    glow.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
+    glow.addColorStop(0.45, 'rgba(239, 68, 68, 0.05)');
+    glow.addColorStop(1, 'rgba(3, 8, 17, 0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.018)';
+    for (let col = 0; col < 6; col += 1) {
+      if (col % 2 === 0) {
+        const bandX = padding + (chartWidth / 6) * col;
+        ctx.fillRect(bandX, padding, chartWidth / 6, chartHeight);
+      }
+    }
+
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.08)';
     ctx.lineWidth = 1;
     for (let row = 0; row <= 4; row += 1) {
       const y = padding + (chartHeight / 4) * row;
@@ -266,6 +366,18 @@ function App() {
       ctx.lineTo(width - padding, y);
       ctx.stroke();
     }
+
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.045)';
+    for (let col = 0; col <= 8; col += 1) {
+      const x = padding + (chartWidth / 8) * col;
+      ctx.beginPath();
+      ctx.moveTo(x, padding);
+      ctx.lineTo(x, height - padding);
+      ctx.stroke();
+    }
+
+    ctx.strokeStyle = 'rgba(226, 232, 240, 0.14)';
+    ctx.strokeRect(padding, padding, chartWidth, chartHeight);
 
     candles.forEach((candle, index) => {
       const x = padding + (chartWidth / candles.length) * index + candleWidth / 2;
@@ -285,6 +397,23 @@ function App() {
       ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
       ctx.strokeRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
     });
+
+    const latest = candles[candles.length - 1];
+    const latestY = padding + ((maxPrice - latest.close) / range) * chartHeight;
+    const pulse = 0.35 + Math.abs(Math.sin(frameTime / 260)) * 0.45;
+    ctx.strokeStyle = `rgba(56, 189, 248, ${pulse})`;
+    ctx.fillStyle = '#38bdf8';
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.moveTo(padding, latestY);
+    ctx.lineTo(width - padding, latestY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.arc(width - padding + 8, latestY, 4 + pulse * 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = '12px Inter, system-ui, sans-serif';
+    ctx.fillText(formatRate(latest.close), width - padding - 72, Math.max(18, latestY - 8));
   }
 
   function calculatePosition() {
@@ -345,6 +474,8 @@ function App() {
               setSelectedAsset={setSelectedAsset}
               setTimeframe={setTimeframe}
               setSelectedIndicators={setSelectedIndicators}
+              setDataSource={setDataSource}
+              loadMarket={loadMarket}
             />
           } />
           <Route path="signals" element={<LiveSignalsPage signals={signals} />} />
@@ -353,7 +484,11 @@ function App() {
               assistantQuery={assistantQuery}
               setAssistantQuery={setAssistantQuery}
               assistantAnswer={assistantAnswer}
+              assistantLoading={assistantLoading}
+              assistantHistory={assistantHistory}
               runAssistant={runAssistant}
+              selectedAsset={selectedAsset}
+              timeframe={timeframe}
             />
           } />
           <Route path="risk" element={
@@ -375,6 +510,7 @@ function App() {
             <AcademyPage
               academy={academy}
               aiBook={aiBook}
+              recommendedBooks={recommendedBooks}
               openChapter={openChapter}
               setOpenChapter={setOpenChapter}
             />
