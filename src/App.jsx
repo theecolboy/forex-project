@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+const flagEmojis = { au: '🇦🇺', jp: '🇯🇵', gb: '🇬🇧', us: '🇺🇸' };
+
+function getFlagEmoji(session) {
+  return flagEmojis[session.flag] || session.flag || '🏳️';
+}
+
 const assetCatalog = {
   forex: ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'USD/SEK'],
   commodities: ['Gold', 'Silver', 'Crude Oil', 'Natural Gas', 'Copper'],

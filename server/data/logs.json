@@ -298,5 +298,135 @@
     "timestamp": "2026-05-29T10:40:42.714Z",
     "action": "market load",
     "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:20.763Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:20.781Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:28.553Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:28.653Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:30.651Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:30.738Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:43.052Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:43.132Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:45.084Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:45.164Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:46.672Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:46.724Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:47.998Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:48.081Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:49.495Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:49.599Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:51.228Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:43:51.334Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:44:15.976Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:44:16.037Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:44:30.398Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:44:30.489Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:46:43.449Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:46:43.542Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:47:35.092Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T10:47:35.141Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
   }
 ]
