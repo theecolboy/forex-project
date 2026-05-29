@@ -1,56 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forex Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>💱 Forex Dashboard</h1>
-            <p>Real-time Currency Exchange Rates</p>
-        </header>
-
-        <div class="search-section">
-            <input type="text" id="currencyInput" placeholder="Enter currency pair (e.g., EUR/USD)">
-            <button onclick="searchCurrency()">Search</button>
-        </div>
-
-        <div class="rates-container">
-            <div class="rate-card">
-                <h3>EUR/USD</h3>
-                <p class="rate">1.0850</p>
-                <p class="change positive">+0.25%</p>
-            </div>
-            <div class="rate-card">
-                <h3>GBP/USD</h3>
-                <p class="rate">1.2750</p>
-                <p class="change positive">+0.15%</p>
-            </div>
-            <div class="rate-card">
-                <h3>USD/JPY</h3>
-                <p class="rate">149.50</p>
-                <p class="change negative">-0.10%</p>
-            </div>
-            <div class="rate-card">
-                <h3>AUD/USD</h3>
-                <p class="rate">0.6750</p>
-                <p class="change positive">+0.20%</p>
-            </div>
-        </div>
-
-        <div class="chart-section">
-            <h2>24-Hour Trend</h2>
-            <canvas id="trendChart"></canvas>
-        </div>
-
-        <footer>
-            <p>&copy; 2026 Forex Dashboard | Built with HTML, CSS & JavaScript</p>
-        </footer>
-    </div>
-
-    <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pipvision fx | Professional Dashboard</title>
+    <meta
+      name="description"
+      content="A polished Forex dashboard built with React and Vite to display live currency exchange rates and market trends."
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
