@@ -311,12 +311,22 @@ button[type='button'] {
 }
 
 .button-group button.active,
-.indicator-list button.active-indicator,
-button[type='button'].active {
-  background: linear-gradient(135deg, #38bdf8 0%, #7dd3fc 100%);
-  border-color: transparent;
-  color: #020617;
-}
+ .indicator-list button.active-indicator,
+ button[type='button'].active {
+   background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+   border-color: transparent;
+   color: #fef2f2;
+ }
+
+ .hint {
+   color: #fca5a5;
+ }
+
+ select:focus,
+ textarea:focus,
+ input:focus {
+   outline: 2px solid rgba(239, 68, 68, 0.35);
+ }
 
 select {
   width: 100%;
@@ -547,13 +557,13 @@ input:focus {
 }
 
 .assistant-panel button {
-  width: fit-content;
-  padding: 0.95rem 1.4rem;
-  background: linear-gradient(135deg, #38bdf8 0%, #7dd3fc 100%);
-  color: #020617;
-  font-weight: 700;
-  cursor: pointer;
-}
+   width: fit-content;
+   padding: 0.95rem 1.4rem;
+   background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+   color: #fef2f2;
+   font-weight: 700;
+   cursor: pointer;
+ }
 
 .assistant-answer {
   background: rgba(255, 255, 255, 0.05);
