@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-
-const flagEmojis = { au: '🇦🇺', jp: '🇯🇵', gb: '🇬🇧', us: '🇺🇸' };
-
-function getFlagEmoji(session) {
-  return flagEmojis[session.flag] || session.flag || '🏳️';
-}
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './Layout.jsx';
+import HomePage from './pages/HomePage.jsx';
+import TradeViewPage from './pages/TradeViewPage.jsx';
+import LiveSignalsPage from './pages/LiveSignalsPage.jsx';
+import AIAssistantPage from './pages/AIAssistantPage.jsx';
+import RiskManagementPage from './pages/RiskManagementPage.jsx';
+import AcademyPage from './pages/AcademyPage.jsx';
+import ActivityLogPage from './pages/ActivityLogPage.jsx';
+import IndicatorPage from './pages/IndicatorPage.jsx';
 
 const assetCatalog = {
   forex: ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'USD/SEK'],
@@ -43,7 +47,7 @@ function App() {
   const [assistantQuery, setAssistantQuery] = useState('');
   const [assistantAnswer, setAssistantAnswer] = useState('Ask the trading assistant for risk, entries, or strategy validation.');
   const [accountSize, setAccountSize] = useState(10000);
-  const [riskPercent, setRiskPercent] = useState(1); // percent per trade
+  const [riskPercent, setRiskPercent] = useState(1);
   const [entryPrice, setEntryPrice] = useState('');
   const [stopPrice, setStopPrice] = useState('');
   const [calcResult, setCalcResult] = useState(null);
@@ -120,7 +124,6 @@ function App() {
     try {
       setStatusMessage('Loading live dashboard data...');
       const indicatorQuery = selectedIndicators.join(',');
-      // If user selected Twelve Data, call provider endpoint which uses TWELVEDATA_KEY on the server
       const endpoint = dataSource === 'twelvedata'
         ? buildApiPath(`/provider/twelvedata/market?symbol=${encodeURIComponent(selectedAsset)}&interval=${encodeURIComponent(mapTimeframe(timeframe))}&indicators=${encodeURIComponent(indicatorQuery)}`)
         : buildApiPath(`/market?category=${category}&symbol=${encodeURIComponent(selectedAsset)}&timeframe=${timeframe}&indicators=${encodeURIComponent(indicatorQuery)}`);
@@ -137,7 +140,6 @@ function App() {
   }
 
   function mapTimeframe(tf) {
-    // Map UI timeframe to provider interval strings where reasonable
     switch (tf) {
       case '1m': return '1min';
       case '5m': return '5min';
@@ -283,332 +285,102 @@ function App() {
     }
     const riskAmount = acct * pct;
     const units = Math.floor(riskAmount / riskPerUnit);
-    const rr = ((entry - stop) === 0) ? null : (Math.abs(entry - stop));
-    setCalcResult({ units, riskAmount: Number(riskAmount.toFixed(2)), riskPerUnit: Number(riskPerUnit.toFixed(6)), rr });
+    setCalcResult({ units, riskAmount: Number(riskAmount.toFixed(2)), riskPerUnit: Number(riskPerUnit.toFixed(6)) });
     pushLog('risk calc', `acct:${acct} risk%:${riskPercent} entry:${entry} stop:${stop} units:${units}`);
-  }
-
-  function getSessionLocalTime(session) {
-    const now = new Date();
-    const utcHours = now.getUTCHours();
-    const utcMinutes = now.getUTCMinutes();
-    const timezone = parseInt(session.timezone, 10);
-    const localHours = (utcHours + timezone + 24) % 24;
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${pad(localHours)}:${pad(utcMinutes)}`;
   }
 
   const currentIndicators = marketData?.indicators || {};
   const currentOverview = marketData?.overview || {};
 
   return (
-    <div className="app-shell">
-      <header className="topbar">
-        <div>
-          <p className="eyebrow">AI-powered market center</p>
-          <h1>pipvision fx</h1>
-          <p className="subtitle">Live candlestick monitoring with trading signals, risk management, favorites, academy content, and backend logging.</p>
-        </div>
-        <div className="top-actions">
-          <div className="sessions">
-            {(overview?.marketSummary?.sessions || []).map((s) => (
-              <span key={s.name} className={`session-chip ${s.active ? 'active' : ''}`}>
-                {s.name}
-              </span>
-            ))}
-          </div>
-          <span className="status-chip">{overview?.marketSummary?.monitor || '24/7 monitoring'}</span>
-        </div>
-        <div className="session-guide">
-          <div className="time-chip">Local time: {localTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-          <div className="session-note">{overview?.marketSummary?.guidance || 'Track your current and upcoming trading sessions below.'}</div>
-        </div>
-        <div className="session-grid">
-          {(overview?.marketSummary?.sessions || []).map((session) => (
-            <div key={session.name} className={`session-card ${session.active ? 'active' : ''}`}>
-              <div className="session-card-title">
-                <span className="session-flag">{getFlagEmoji(session)}</span>
-                <strong>{session.name}</strong>
-                <span className="live-clock">{getSessionLocalTime(session)}</span>
-              </div>
-              <span>{session.windowUTC}</span>
-              <span>{session.localWindow}</span>
-            </div>
-          ))}
-        </div>
-      </header>
-
-      <main className="dashboard">
-        <section className="controls-grid card">
-          <div className="control-block">
-            <label>Market category</label>
-            <div className="button-group">
-              {categories.map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  className={item === category ? 'active' : ''}
-                  onClick={() => changeCategory(item)}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="control-block">
-            <label>Asset</label>
-            <select value={selectedAsset} onChange={(event) => setSelectedAsset(event.target.value)}>
-              {assetList.map((asset) => (
-                <option key={asset} value={asset}>
-                  {asset}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="control-block">
-            <label>Timeframe</label>
-            <select value={timeframe} onChange={(event) => setTimeframe(event.target.value)}>
-              {timeframes.map((frame) => (
-                <option key={frame} value={frame}>
-                  {frame}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="control-block">
-            <label>Indicators</label>
-            <div className="indicator-list">
-              {indicatorOptions.map((indicator) => (
-                <button
-                  type="button"
-                  key={indicator}
-                  className={selectedIndicators.includes(indicator) ? 'active-indicator' : ''}
-                  onClick={() => {
-                    setSelectedIndicators((current) =>
-                      current.includes(indicator)
-                        ? current.filter((name) => name !== indicator)
-                        : [...current, indicator]
-                    );
-                  }}
-                >
-                  {indicator}
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="live-grid">
-          <article className="market-panel card">
-            <div className="panel-header">
-              <div>
-                <h2>{selectedAsset}</h2>
-                <p>{categoryDisplay} live feed • {timeframe} timeframe</p>
-
-          <div className="control-block">
-            <label>Data source</label>
-            <div className="button-group">
-              <button type="button" className={dataSource === 'simulation' ? 'active' : ''} onClick={() => setDataSource('simulation')}>Simulation</button>
-              <button type="button" className={dataSource === 'twelvedata' ? 'active' : ''} onClick={() => setDataSource('twelvedata')}>Twelve Data (Live)</button>
-            </div>
-            {dataSource === 'twelvedata' && (
-              <p className="hint">Using Twelve Data: ensure `TWELVEDATA_KEY` is set in your `.env` and restart the server.</p>
-            )}
-          </div>
-              </div>
-              <div className="price-chip">{currentOverview.price ? formatRate(currentOverview.price) : '--'}</div>
-            </div>
-            <div className="market-meta">
-              <span>High: {currentOverview.high ? formatRate(currentOverview.high) : '--'}</span>
-              <span>Low: {currentOverview.low ? formatRate(currentOverview.low) : '--'}</span>
-              <span>Vol: {currentOverview.volume || '--'}</span>
-              <span>Change: {currentOverview.change ? `${currentOverview.change}%` : '--'}</span>
-            </div>
-            <div className="chart-container">
-              <canvas ref={chartRef} width="940" height="320" />
-            </div>
-            <div className="indicator-summary">
-              {Object.entries(currentIndicators).map(([name, value]) => (
-                <div key={name} className="indicator-pill">
-                  <span>{name}</span>
-                  <strong>{typeof value === 'object' ? `${value.lower.toFixed(2)} - ${value.upper.toFixed(2)}` : value}</strong>
-                </div>
-              ))}
-            </div>
-            <div className="market-footer">
-              <span>{statusMessage}</span>
-            </div>
-          </article>
-
-          <aside className="side-panel card">
-            <div className="panel-header">
-              <div>
-                <h2>Live signals</h2>
-                <p>AI trade ideas for current market conditions.</p>
-              </div>
-            </div>
-            <div className="signal-list">
-              {signals.map((signal) => (
-                <div key={`${signal.symbol}-${signal.timeframe}`} className={`signal-card ${signal.signal.toLowerCase()}`}>
-                  <div>
-                    <strong>{signal.symbol}</strong>
-                    <span>{signal.signal}</span>
-                  </div>
-                  <p>{signal.rationale}</p>
-                  <div className="signal-meta">
-                    <span>{signal.confidence}</span>
-                    <span>{signal.timeframe}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="favorites-panel">
-              <div className="panel-header">
-                <h3>Favorites</h3>
-                <button type="button" onClick={() => addFavorite(selectedAsset)}>
-                  + Add
-                </button>
-              </div>
-              <ul className="favorite-list">
-                {favoriteSummary.map((symbol) => (
-                  <li key={symbol}>
-                    <span>{symbol}</span>
-                    <button type="button" onClick={() => removeFavorite(symbol)}>Remove</button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </aside>
-        </section>
-
-        <section className="insights-grid">
-          <div className="academy-panel card">
-            <div className="panel-header">
-              <div>
-                <h2>Beginner academy</h2>
-                <p>Learning modules for live trading, risk management, and effective strategy execution.</p>
-              </div>
-            </div>
-            <div className="academy-content">
-              <ul className="academy-list">
-                {academy.map((item) => (
-                  <li key={item.title}>
-                    <strong>{item.title}</strong>
-                    <p>{item.description}</p>
-                  </li>
-                ))}
-              </ul>
-
-              {aiBook && (
-                <div className="ai-book">
-                  <h3>{aiBook.title}</h3>
-                  <p>{aiBook.description}</p>
-                  <div className="book-chapters">
-                    {aiBook.chapters.map((ch) => (
-                      <div key={ch.id} className="chapter">
-                        <button type="button" onClick={() => setOpenChapter(openChapter === ch.id ? null : ch.id)}>{ch.title}</button>
-                        {openChapter === ch.id && <p className="chapter-content">{ch.content}</p>}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="assistant-panel card">
-            <div className="panel-header">
-              <div>
-                <h2>AI trading assistant</h2>
-                <p>Ask for trade ideas, risk rules, or entry validation.</p>
-              </div>
-            </div>
-            <textarea
-              value={assistantQuery}
-              onChange={(event) => setAssistantQuery(event.target.value)}
-              placeholder="What should I know before trading this asset?"
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={
+            <HomePage
+              overview={overview}
+              localTime={localTime}
+              favoriteSummary={favoriteSummary}
+              favorites={favorites}
+              addFavorite={addFavorite}
+              removeFavorite={removeFavorite}
             />
-            <button type="button" onClick={runAssistant}>Ask assistant</button>
-            <div className="assistant-answer">
-              <strong>Response</strong>
-              <p>{assistantAnswer}</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="utility-row">
-          <div className="risk-panel card">
-            <div className="panel-header">
-              <h2>Risk management</h2>
-              <p>Tools and guardrails to protect your capital.</p>
-            </div>
-            <div className="risk-calculator">
-              <div className="calc-row">
-                <label>Account size</label>
-                <input type="number" value={accountSize} onChange={(e) => setAccountSize(e.target.value)} />
-              </div>
-              <div className="calc-row">
-                <label>Risk % per trade</label>
-                <input type="number" value={riskPercent} onChange={(e) => setRiskPercent(e.target.value)} />
-              </div>
-              <div className="calc-row">
-                <label>Entry price</label>
-                <input type="number" value={entryPrice} onChange={(e) => setEntryPrice(e.target.value)} />
-              </div>
-              <div className="calc-row">
-                <label>Stop price</label>
-                <input type="number" value={stopPrice} onChange={(e) => setStopPrice(e.target.value)} />
-              </div>
-              <div style={{ marginTop: 10 }}>
-                <button type="button" onClick={calculatePosition}>Calculate position size</button>
-              </div>
-              {calcResult && (
-                <div className="calc-result">
-                  {calcResult.error ? (
-                    <div className="error">{calcResult.error}</div>
-                  ) : (
-                    <div>
-                      <div>Risk amount: {calcResult.riskAmount}</div>
-                      <div>Risk per unit: {calcResult.riskPerUnit}</div>
-                      <div>Suggested units: {calcResult.units}</div>
-                    </div>
-                  )}
-                </div>
-              )}
-              <hr />
-              <ul>
-                {riskTools.map((tool) => (
-                  <li key={tool}>{tool}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="log-panel card">
-            <div className="panel-header">
-              <h2>Activity log</h2>
-              <p>Backend audit trail for trade actions and dashboard events.</p>
-            </div>
-            <div className="log-list">
-              {logs.map((entry) => (
-                <div key={`${entry.timestamp}-${entry.action}`} className="log-entry">
-                  <span>{new Date(entry.timestamp).toLocaleTimeString()}</span>
-                  <strong>{entry.action}</strong>
-                  <p>{entry.details}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="footer">
-        <p>© 2026 pipvision fx. Backend logging, multi-asset monitoring, and AI signals in one unified view.</p>
-      </footer>
-    </div>
+          } />
+          <Route path="trade" element={
+            <TradeViewPage
+              category={category}
+              categories={categories}
+              assetCatalog={assetCatalog}
+              selectedAsset={selectedAsset}
+              assetList={assetList}
+              timeframe={timeframe}
+              timeframes={timeframes}
+              selectedIndicators={selectedIndicators}
+              indicatorOptions={indicatorOptions}
+              marketData={marketData}
+              chartRef={chartRef}
+              statusMessage={statusMessage}
+              currentOverview={currentOverview}
+              currentIndicators={currentIndicators}
+              dataSource={dataSource}
+              changeCategory={changeCategory}
+              setSelectedAsset={setSelectedAsset}
+              setTimeframe={setTimeframe}
+              setSelectedIndicators={setSelectedIndicators}
+            />
+          } />
+          <Route path="signals" element={<LiveSignalsPage signals={signals} />} />
+          <Route path="assistant" element={
+            <AIAssistantPage
+              assistantQuery={assistantQuery}
+              setAssistantQuery={setAssistantQuery}
+              assistantAnswer={assistantAnswer}
+              runAssistant={runAssistant}
+            />
+          } />
+          <Route path="risk" element={
+            <RiskManagementPage
+              accountSize={accountSize}
+              setAccountSize={setAccountSize}
+              riskPercent={riskPercent}
+              setRiskPercent={setRiskPercent}
+              entryPrice={entryPrice}
+              setEntryPrice={setEntryPrice}
+              stopPrice={stopPrice}
+              setStopPrice={setStopPrice}
+              calcResult={calcResult}
+              calculatePosition={calculatePosition}
+              riskTools={riskTools}
+            />
+          } />
+          <Route path="academy" element={
+            <AcademyPage
+              academy={academy}
+              aiBook={aiBook}
+              openChapter={openChapter}
+              setOpenChapter={setOpenChapter}
+            />
+          } />
+          <Route path="activity" element={<ActivityLogPage logs={logs} />} />
+          <Route path="indicators" element={
+            <IndicatorPage
+              selectedIndicators={selectedIndicators}
+              indicatorOptions={indicatorOptions}
+              setSelectedIndicators={setSelectedIndicators}
+              changeCategory={changeCategory}
+              categories={categories}
+              category={category}
+              assetCatalog={assetCatalog}
+              selectedAsset={selectedAsset}
+              setSelectedAsset={setSelectedAsset}
+              timeframes={timeframes}
+              timeframe={timeframe}
+              setTimeframe={setTimeframe}
+            />
+          } />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

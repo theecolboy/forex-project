@@ -9,16 +9,25 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": ["forex", "trading", "dashboard", "react", "vite", "signals", "analytics"],
+  "keywords": [
+    "forex",
+    "trading",
+    "dashboard",
+    "react",
+    "vite",
+    "signals",
+    "analytics"
+  ],
   "author": "theecolboy",
   "license": "MIT",
   "dependencies": {
     "concurrently": "^8.2.0",
     "cors": "^2.8.5",
-    "express": "^4.18.4",
     "dotenv": "^16.1.4",
+    "express": "^4.18.4",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.22.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
