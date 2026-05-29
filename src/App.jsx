@@ -321,7 +321,7 @@ function App() {
           {(overview?.marketSummary?.sessions || []).map((session) => (
             <div key={session.name} className={`session-card ${session.active ? 'active' : ''}`}>
               <div className="session-card-title">
-                <span className="session-flag">{session.flag}</span>
+                <span className="session-flag">{getFlagEmoji(session)}</span>
                 <strong>{session.name}</strong>
                 <span className="live-clock">{getSessionLocalTime(session)}</span>
               </div>

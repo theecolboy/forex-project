@@ -173,40 +173,11 @@ app.get('/api/status', (req, res) => {
 });
 
 function getTradingSessions() {
-  // Approximate UTC windows for the four main sessions
   const sessions = [
-    {
-      name: 'Sydney',
-      startUTC: 22,
-      endUTC: 7,
-      flag: '🇦🇺',
-      timezone: '+10',
-      localWindow: '09:00–16:00 AEST'
-    },
-    {
-      name: 'Tokyo',
-      startUTC: 0,
-      endUTC: 9,
-      flag: '🇯🇵',
-      timezone: '+9',
-      localWindow: '09:00–18:00 JST'
-    },
-    {
-      name: 'London',
-      startUTC: 8,
-      endUTC: 17,
-      flag: '🇬🇧',
-      timezone: '+1',
-      localWindow: '09:00–18:00 BST/GMT'
-    },
-    {
-      name: 'New York',
-      startUTC: 13,
-      endUTC: 22,
-      flag: '🇺🇸',
-      timezone: '-4',
-      localWindow: '08:00–17:00 ET'
-    }
+    { name: 'Sydney', startUTC: 22, endUTC: 7, flag: '🇦🇺', timezone: '+10', localWindow: '09:00–16:00 AEST' },
+    { name: 'Tokyo', startUTC: 0, endUTC: 9, flag: '🇯🇵', timezone: '+9', localWindow: '09:00–18:00 JST' },
+    { name: 'London', startUTC: 8, endUTC: 17, flag: '🇬🇧', timezone: '+1', localWindow: '09:00–18:00 BST/GMT' },
+    { name: 'New York', startUTC: 13, endUTC: 22, flag: '🇺🇸', timezone: '-4', localWindow: '08:00–17:00 ET' }
   ];
 
   const now = new Date();
