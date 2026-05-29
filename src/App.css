@@ -73,6 +73,37 @@ body {
    color: #e2e8f0;
  }
 
+ .quick-actions {
+   display: flex;
+   gap: 16px;
+   flex-wrap: wrap;
+   margin-top: 20px;
+ }
+
+ .btn-primary, .btn-secondary {
+   padding: 12px 24px;
+   border-radius: 14px;
+   text-decoration: none;
+   font-weight: 600;
+   transition: all 0.2s;
+ }
+
+ .btn-primary {
+   background: linear-gradient(135deg, #38bdf8, #7dd3fc);
+   color: #020617;
+ }
+
+ .btn-secondary {
+   background: rgba(255, 255, 255, 0.05);
+   color: #e2e8f0;
+   border: 1px solid rgba(148, 163, 184, 0.12);
+ }
+
+ .home-page {
+   display: grid;
+   gap: 24px;
+ }
+
  .main-content {
    display: grid;
    gap: 24px;

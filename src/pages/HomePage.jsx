@@ -1,5 +1,15 @@
 import { Link } from 'react-router-dom';
 
+function getSessionLocalTime(session) {
+  const now = new Date();
+  const utcHours = now.getUTCHours();
+  const utcMinutes = now.getUTCMinutes();
+  const timezone = parseInt(session.timezone, 10);
+  const localHours = (utcHours + timezone + 24) % 24;
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(localHours)}:${pad(utcMinutes)}`;
+}
+
 export default function HomePage({ overview, localTime, favoriteSummary, favorites, addFavorite, removeFavorite }) {
   return (
     <div className="home-page">
@@ -29,6 +39,7 @@ export default function HomePage({ overview, localTime, favoriteSummary, favorit
               <div className="session-card-title">
                 <span className="session-flag">{session.flag}</span>
                 <strong>{session.name}</strong>
+                <span className="live-clock">{getSessionLocalTime(session)}</span>
               </div>
               <span>{session.windowUTC}</span>
               <span>{session.localWindow}</span>
