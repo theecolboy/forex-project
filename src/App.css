@@ -151,11 +151,11 @@ body {
  }
 
 .subtitle {
-  font-size: 1rem;
-  max-width: 760px;
-  color: #cbd5e1;
-  margin-top: 12px;
-}
+   font-size: 1rem;
+   max-width: 760px;
+   color: #fca5a5;
+   margin-top: 12px;
+ }
 
 .top-actions {
   display: flex;
@@ -612,10 +612,12 @@ button[type='button'] {
 }
 
 footer.footer {
-  padding: 18px 22px;
-  text-align: center;
-  color: #94a3b8;
-}
+   padding: 18px 22px;
+   text-align: center;
+   color: #fca5a5;
+   border-top: 1px solid rgba(239, 68, 68, 0.2);
+   margin-top: 24px;
+ }
 
 @media (max-width: 1128px) {
   .controls-grid,
