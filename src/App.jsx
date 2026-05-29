@@ -15,8 +15,7 @@ function formatRate(rate) {
 }
 
 function buildApiPath(path) {
-  const apiBase = typeof import.meta !== 'undefined' ? (import.meta.env.VITE_API_URL || '') : '';
-  return `${apiBase}/api${path}`;
+  return `${''}/api${path}`;
 }
 
 function App() {
