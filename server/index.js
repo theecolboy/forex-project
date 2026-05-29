@@ -356,30 +356,51 @@ app.post('/api/assistant', (req, res) => {
 });
 
 function generateNews(symbol, category) {
-  const newsTemplates = [
-    { title: `${symbol} Breaks Key Support`, summary: `Price dropped below critical support level, potential for further downside momentum.`, impact: 'high', source: 'Forex Factory' },
-    { title: `Central Bank Intervention Expected`, summary: `Market anticipates policy action as volatility increases in ${category} markets.`, impact: 'high', source: 'Bloomberg' },
-    { title: `Economic Data Release Pending`, summary: `Upcoming CPI and employment figures could drive significant price action.`, impact: 'medium', source: 'Reuters' },
-    { title: `Technical Correction Underway`, summary: `${symbol} shows signs of retracement after recent rally.`, impact: 'low', source: 'Investing.com' }
-  ];
-  return newsTemplates[Math.floor(Math.random() * newsTemplates.length)];
+  // Special handling for commodities like Gold
+  if (symbol.includes('Gold') || symbol.includes('XAU')) {
+    return {
+      title: 'Gold Price Surges on Safe-Haven Demand',
+      summary: 'Gold futures jumped as investors seek protection amid market uncertainty. Fed policy outlook and inflation concerns driving precious metals higher.',
+      impact: 'high',
+      source: 'Kitco News'
+    };
+  }
+  // Forex news
+  if (category === 'forex') {
+    return {
+      title: `${symbol} Breaks Key Support`,
+      summary: `Price dropped below critical support level, potential for further downside momentum.`,
+      impact: 'high',
+      source: 'Forex Factory'
+    };
+  }
+  // Indices news
+  return {
+    title: `${symbol} Index Futures Edge Higher`,
+    summary: `Equity markets show mixed trading as investors digest economic data. Volatility expected during US session.`,
+    impact: 'medium',
+    source: 'MarketWatch'
+  };
 }
 
 app.get('/api/news', (req, res) => {
   const category = req.query.category || 'forex';
   const symbol = req.query.symbol || 'EUR/USD';
-  const items = [generateNews(symbol, category)];
-  // Add more news items
-  for (let i = 0; i < 4; i++) {
-    items.push({
-      title: `Market Update ${i + 1}`,
-      summary: `Latest developments in ${category} trading affecting ${symbol} and related assets.`,
-      time: new Date(Date.now() - i * 3600000).toISOString(),
-      impact: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)],
-      source: ['MarketWatch', 'Reuters', 'Bloomberg'][Math.floor(Math.random() * 3)],
-      currency: symbol.substring(0, 3)
-    });
-  }
+  
+  const goldNews = [
+    { title: 'Gold Hits Record High on Dovish Fed Outlook', summary: 'Gold prices surge to new all-time highs as traders price in potential Fed rate cuts. Safe-haven demand intensifies amid geopolitical tensions.', time: new Date().toISOString(), impact: 'high', source: 'Kitco News', currency: 'XAU' },
+    { title: 'Central Banks Ramp Up Gold Buying', summary: 'Poland, China and India continue aggressive gold purchases. CBGA data shows sustained demand from sovereign investors.', time: new Date(Date.now() - 3600000).toISOString(), impact: 'high', source: 'Reuters', currency: 'XAU' },
+    { title: 'Gold Volatility Spikes Ahead of NFP', summary: 'Precious metals trading in wide ranges as non-farm payrolls loom. Options market signals increased two-way risk.', time: new Date(Date.now() - 7200000).toISOString(), impact: 'medium', source: 'Bloomberg', currency: 'XAU' },
+    { title: 'Gold Miners Rally on Earnings Beat', summary: 'Major gold mining stocks outperform as Q1 results exceed expectations. Dividend hikes lift sentiment across sector.', time: new Date(Date.now() - 10800000).toISOString(), impact: 'low', source: 'Mining.com', currency: 'XAU' }
+  ];
+  
+  const forexNews = [
+    { title: 'Dollar Index Holds Steady Ahead of CPI', summary: 'EUR/USD and GBP/USD consolidate as markets await US inflation data. Fed rate cut pricing stabilizing.', time: new Date().toISOString(), impact: 'high', source: 'Forex Factory', currency: 'USD' },
+    { title: 'ECB Signals Caution on Rate Cuts', summary: 'Lagarde emphasizes data-dependence while maintaining dovish tone. EUR finds support against USD.', time: new Date(Date.now() - 3600000).toISOString(), impact: 'medium', source: 'Reuters', currency: 'EUR' },
+    { title: 'BoJ Intervenes to Cap Yen Weakness', summary: 'Japanese officials step in to support currency. USD/JPY retreats from multi-month highs.', time: new Date(Date.now() - 7200000).toISOString(), impact: 'high', source: 'Bloomberg', currency: 'JPY' }
+  ];
+  
+  const items = symbol.includes('Gold') || symbol.includes('XAU') ? goldNews : forexNews;
   res.json({ news: items });
 });
 
