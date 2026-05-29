@@ -9,6 +9,7 @@ import RiskManagementPage from './pages/RiskManagementPage.jsx';
 import AcademyPage from './pages/AcademyPage.jsx';
 import ActivityLogPage from './pages/ActivityLogPage.jsx';
 import IndicatorPage from './pages/IndicatorPage.jsx';
+import TradingViewPage from './pages/TradingViewPage.jsx';
 
 const assetCatalog = {
   forex: ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'USD/SEK'],
@@ -376,6 +377,27 @@ function App() {
               timeframes={timeframes}
               timeframe={timeframe}
               setTimeframe={setTimeframe}
+            />
+          } />
+          <Route path="trading" element={
+            <TradingViewPage
+              assistantQuery={assistantQuery}
+              setAssistantQuery={setAssistantQuery}
+              runAssistant={runAssistant}
+              assistantAnswer={assistantAnswer}
+              marketData={marketData}
+              selectedAsset={selectedAsset}
+              entryPrice={entryPrice}
+              setEntryPrice={setEntryPrice}
+              stopPrice={stopPrice}
+              setStopPrice={setStopPrice}
+              accountSize={accountSize}
+              setAccountSize={setAccountSize}
+              riskPercent={riskPercent}
+              setRiskPercent={setRiskPercent}
+              calculatePosition={calculatePosition}
+              calcResult={calcResult}
+              setCalcResult={setCalcResult}
             />
           } />
         </Route>

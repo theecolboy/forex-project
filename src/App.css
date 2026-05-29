@@ -604,8 +604,57 @@ input:focus {
 }
 
 .market-footer span {
-  color: #94a3b8;
-}
+   color: #94a3b8;
+ }
+
+ .trading-layout {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 24px;
+ }
+
+ .trading-view-page {
+   display: grid;
+   gap: 24px;
+ }
+
+ .place-order-btn {
+   width: 100%;
+   padding: 16px;
+   background: linear-gradient(135deg, #ef4444, #f87171);
+   color: #fef2f2;
+   border: none;
+   border-radius: 16px;
+   font-weight: 700;
+   font-size: 1.1rem;
+   cursor: pointer;
+   transition: transform 0.2s;
+ }
+
+ .place-order-btn:hover {
+   transform: scale(1.02);
+ }
+
+ button.buy {
+   background: linear-gradient(135deg, #22c55e, #38bdf8);
+ }
+
+ button.sell {
+   background: linear-gradient(135deg, #ef4444, #f87171);
+ }
+
+ .result-details {
+   margin-top: 12px;
+   padding: 12px;
+   background: rgba(239, 68, 68, 0.1);
+   border-radius: 10px;
+ }
+
+ .assistant-insight {
+   padding: 20px;
+   background: rgba(239, 68, 68, 0.08);
+   border: 1px solid rgba(239, 68, 68, 0.2);
+ }
 
 button[type='button'] {
   border-radius: 16px;

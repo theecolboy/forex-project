@@ -9,6 +9,7 @@ export default function Layout() {
           <div className="nav-links">
             <Link to="/">Home</Link>
             <Link to="/trade">Trade</Link>
+            <Link to="/trading">Trading View</Link>
             <Link to="/indicators">Indicators</Link>
             <Link to="/signals">Signals</Link>
             <Link to="/assistant">AI Assistant</Link>
