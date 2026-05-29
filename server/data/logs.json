@@ -448,5 +448,15 @@
     "timestamp": "2026-05-29T11:06:25.596Z",
     "action": "risk calc",
     "details": "acct:10000 risk%:1 entry:10 stop:4 units:16"
+  },
+  {
+    "timestamp": "2026-05-29T11:38:40.592Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-29T11:38:40.723Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
   }
 ]
