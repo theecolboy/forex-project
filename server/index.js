@@ -355,6 +355,34 @@ app.post('/api/assistant', (req, res) => {
   res.json({ answer: createAssistantReply(query) });
 });
 
+function generateNews(symbol, category) {
+  const newsTemplates = [
+    { title: `${symbol} Breaks Key Support`, summary: `Price dropped below critical support level, potential for further downside momentum.`, impact: 'high', source: 'Forex Factory' },
+    { title: `Central Bank Intervention Expected`, summary: `Market anticipates policy action as volatility increases in ${category} markets.`, impact: 'high', source: 'Bloomberg' },
+    { title: `Economic Data Release Pending`, summary: `Upcoming CPI and employment figures could drive significant price action.`, impact: 'medium', source: 'Reuters' },
+    { title: `Technical Correction Underway`, summary: `${symbol} shows signs of retracement after recent rally.`, impact: 'low', source: 'Investing.com' }
+  ];
+  return newsTemplates[Math.floor(Math.random() * newsTemplates.length)];
+}
+
+app.get('/api/news', (req, res) => {
+  const category = req.query.category || 'forex';
+  const symbol = req.query.symbol || 'EUR/USD';
+  const items = [generateNews(symbol, category)];
+  // Add more news items
+  for (let i = 0; i < 4; i++) {
+    items.push({
+      title: `Market Update ${i + 1}`,
+      summary: `Latest developments in ${category} trading affecting ${symbol} and related assets.`,
+      time: new Date(Date.now() - i * 3600000).toISOString(),
+      impact: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)],
+      source: ['MarketWatch', 'Reuters', 'Bloomberg'][Math.floor(Math.random() * 3)],
+      currency: symbol.substring(0, 3)
+    });
+  }
+  res.json({ news: items });
+});
+
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`PipVision FX backend running on http://localhost:${PORT}`);

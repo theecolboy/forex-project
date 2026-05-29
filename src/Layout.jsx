@@ -12,6 +12,7 @@ export default function Layout() {
             <Link to="/trading">Trading View</Link>
             <Link to="/indicators">Indicators</Link>
             <Link to="/signals">Signals</Link>
+            <Link to="/news">News</Link>
             <Link to="/assistant">AI Assistant</Link>
             <Link to="/risk">Risk</Link>
             <Link to="/academy">Academy</Link>

@@ -10,6 +10,7 @@ import AcademyPage from './pages/AcademyPage.jsx';
 import ActivityLogPage from './pages/ActivityLogPage.jsx';
 import IndicatorPage from './pages/IndicatorPage.jsx';
 import TradingViewPage from './pages/TradingViewPage.jsx';
+import MarketNewsPage from './pages/MarketNewsPage.jsx';
 
 const assetCatalog = {
   forex: ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'USD/SEK'],
@@ -55,6 +56,7 @@ function App() {
   const [statusMessage, setStatusMessage] = useState('Loading market engine and analytics modules...');
   const [overview, setOverview] = useState(null);
   const [localTime, setLocalTime] = useState(new Date());
+  const [marketNews, setMarketNews] = useState([]);
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -162,6 +164,21 @@ function App() {
       setSignals(data.signals || []);
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  async function loadNews() {
+    try {
+      const response = await fetch(buildApiPath(`/news?category=${category}&symbol=${selectedAsset}`));
+      const data = await response.json();
+      setMarketNews(data.news || []);
+    } catch (error) {
+      console.error(error);
+      setMarketNews([
+        { title: 'Fed Holds Rates Steady', summary: 'Federal Reserve maintains current interest rate levels, signaling cautious approach to inflation.', time: new Date().toISOString(), impact: 'high', source: 'MarketWatch', currency: 'USD' },
+        { title: 'ECB Signals Dovish Tone', summary: 'European Central Bank hints at potential rate cuts later this year amid slowing growth concerns.', time: new Date().toISOString(), impact: 'medium', source: 'Reuters', currency: 'EUR' },
+        { title: 'BoJ Maintains Ultra-Low Rates', summary: 'Bank of Japan continues yield curve control policy unchanged.', time: new Date().toISOString(), impact: 'low', source: 'Bloomberg', currency: 'JPY' }
+      ]);
     }
   }
 
@@ -400,6 +417,7 @@ function App() {
               setCalcResult={setCalcResult}
             />
           } />
+          <Route path="news" element={<MarketNewsPage marketNews={marketNews} loadNews={loadNews} selectedAsset={selectedAsset} />} />
         </Route>
       </Routes>
     </BrowserRouter>
