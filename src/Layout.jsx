@@ -7,7 +7,14 @@ export default function Layout() {
         <div className="nav-container">
           <Link to="/" className="nav-brand">📈 pipvision fx</Link>
           <div className="nav-links">
-            <Link to="/">🏠 Home</Link>
+            <Link to="/" className="nav-link-with-image">
+              <img
+                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=80&q=80"
+                alt=""
+                className="nav-link-image"
+              />
+              Home
+            </Link>
             <Link to="/trade">💹 Trade</Link>
             <Link to="/trading">🕯️ Trading View</Link>
             <Link to="/indicators">📊 Indicators</Link>

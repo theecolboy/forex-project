@@ -1,17 +1,37 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
+const { MongoClient } = require('mongodb');
 
 const PORT = process.env.PORT || 4000;
 const app = express();
 app.use(cors());
 app.use(express.json());
+// MongoDB connection
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri);
+let db;
+let logsCollection;
+let favoritesCollection;
 
-const dataDir = path.join(__dirname, 'data');
-const logsFile = path.join(dataDir, 'logs.json');
-const favoritesFile = path.join(dataDir, 'favorites.json');
+// Connect to MongoDB
+client.connect().then(() => {
+    db = client.db(); // gets the database from the URI (ogodb)
+    logsCollection = db.collection('logs');
+    favoritesCollection = db.collection('favorites');
+    console.log('Connected to MongoDB');
+
+    // Start the server after connecting to MongoDB
+    const PORT = process.env.PORT || 4000;
+    app.listen(PORT, () => {
+        console.log(`PipVision FX backend running on http://localhost:${PORT}`);
+    });
+}).catch(err => {
+    console.error('Failed to connect to MongoDB', err);
+    process.exit(1);
+});
 
 const assetCatalog = {
   forex: ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF', 'NZD/USD', 'USD/SEK'],
@@ -136,30 +156,6 @@ const recommendedBooks = [
 
 const indicatorsCatalog = ['SMA', 'EMA', 'RSI', 'MACD', 'Bollinger Bands', 'ADX', 'Stochastic'];
 const riskToolsCatalog = ['Stop loss guidelines', 'Risk/reward calculator', 'Volatility monitor', 'Exposure management'];
-
-function ensureDataFiles() {
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-  if (!fs.existsSync(logsFile)) {
-    fs.writeFileSync(logsFile, JSON.stringify([], null, 2));
-  }
-  if (!fs.existsSync(favoritesFile)) {
-    fs.writeFileSync(favoritesFile, JSON.stringify([], null, 2));
-  }
-}
-
-function readJson(filePath) {
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-  } catch (err) {
-    return [];
-  }
-}
-
-function writeJson(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-}
 
 function randomWalkSeries(base, points) {
   const series = [];
@@ -351,7 +347,7 @@ function createAssistantReply(query, context = {}) {
   };
 }
 
-ensureDataFiles();
+
 
 app.get('/api/status', (req, res) => {
   res.json({ status: 'ok', version: '1.0.0', name: 'PipVision FX Backend' });
@@ -437,45 +433,67 @@ app.get('/api/signals', (req, res) => {
   res.json({ category, signals: items });
 });
 
-app.get('/api/favorites', (req, res) => {
-  res.json(readJson(favoritesFile));
-});
-
-app.post('/api/favorites', (req, res) => {
-  const favorites = readJson(favoritesFile);
-  const symbol = String(req.body.symbol || '').trim();
-  if (!symbol) {
-    return res.status(400).json({ message: 'Symbol is required' });
+app.get('/api/favorites', async (req, res) => {
+  try {
+    const favorites = await favoritesCollection.find().sort({ timestamp: -1 }).limit(12).toArray();
+    const symbols = favorites.map(doc => doc.symbol);
+    res.json(symbols);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  if (!favorites.includes(symbol)) {
-    favorites.unshift(symbol);
-    writeJson(favoritesFile, favorites.slice(0, 12));
+});
+
+app.post('/api/favorites', async (req, res) => {
+  try {
+    const symbol = String(req.body.symbol || '').trim();
+    if (!symbol) {
+      return res.status(400).json({ message: 'Symbol is required' });
+    }
+    const existing = await favoritesCollection.findOne({ symbol });
+    if (!existing) {
+      await favoritesCollection.insertOne({ symbol, timestamp: new Date() });
+    }
+    const favorites = await favoritesCollection.find().sort({ timestamp: -1 }).limit(12).toArray();
+    const symbols = favorites.map(doc => doc.symbol);
+    res.json(symbols);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  res.json(favorites);
 });
 
-app.delete('/api/favorites/:symbol', (req, res) => {
-  const symbol = String(req.params.symbol || '').trim();
-  const favorites = readJson(favoritesFile).filter((item) => item !== symbol);
-  writeJson(favoritesFile, favorites);
-  res.json(favorites);
+app.delete('/api/favorites/:symbol', async (req, res) => {
+  try {
+    const symbol = String(req.params.symbol || '').trim();
+    await favoritesCollection.deleteMany({ symbol });
+    const favorites = await favoritesCollection.find().sort({ timestamp: -1 }).limit(12).toArray();
+    const symbols = favorites.map(doc => doc.symbol);
+    res.json(symbols);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.get('/api/logs', (req, res) => {
-  const logs = readJson(logsFile);
-  res.json(logs.slice(-20).reverse());
+app.get('/api/logs', async (req, res) => {
+    try {
+        const logs = await logsCollection.find().sort({ timestamp: -1 }).limit(20).toArray();
+        res.json(logs);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-app.post('/api/logs', (req, res) => {
-  const logs = readJson(logsFile);
-  const entry = {
-    timestamp: new Date().toISOString(),
-    action: req.body.action || 'user event',
-    details: req.body.details || ''
-  };
-  logs.push(entry);
-  writeJson(logsFile, logs);
-  res.json(entry);
+app.post('/api/logs', async (req, res) => {
+    try {
+        const entry = {
+            timestamp: new Date().toISOString(),
+            action: req.body.action || 'user event',
+            details: req.body.details || ''
+        };
+        await logsCollection.insertOne(entry);
+        res.json(entry);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 app.get('/api/academy', (req, res) => {
@@ -633,7 +651,4 @@ app.get(/^\/(?!api\/).*/, (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`PipVision FX backend running on http://localhost:${PORT}`);
-});
+

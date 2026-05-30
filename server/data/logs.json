@@ -968,5 +968,15 @@
     "timestamp": "2026-05-29T18:34:02.169Z",
     "action": "market load",
     "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-30T15:11:56.372Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
+  },
+  {
+    "timestamp": "2026-05-30T15:11:56.383Z",
+    "action": "market load",
+    "details": "EUR/USD 1m [source:simulation]"
   }
 ]
